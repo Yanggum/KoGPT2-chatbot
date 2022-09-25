@@ -118,7 +118,6 @@ class CharDataset(Dataset):
 class KoGPT2Chat(LightningModule):
     def __init__(self, hparams, **kwargs):
         super(KoGPT2Chat, self).__init__()
-        self.hparams = hparams
         self.neg = -1e18
         self.kogpt2 = AutoModelForCausalLM.from_pretrained(checkpointname)
         self.loss_function = torch.nn.CrossEntropyLoss(reduction='none')
