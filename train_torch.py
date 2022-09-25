@@ -239,9 +239,10 @@ if __name__ == "__main__":
             args,
             checkpoint_callback=checkpoint_callback, gradient_clip_val=1.0)
         trainer.fit(model)
-
-        model.push_to_hub("Neptune")
-        TOKENIZER.push_to_hub("Neptune")
+        
+        model.save_pretrained("Neptune")
+        #model.push_to_hub("Neptune")
+        #TOKENIZER.push_to_hub("Neptune")
         
         logging.info('best model path {}'.format(checkpoint_callback.best_model_path))
     if args.chat:
