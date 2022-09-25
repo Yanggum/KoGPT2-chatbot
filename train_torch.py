@@ -10,7 +10,9 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.core.lightning import LightningModule
 from torch.utils.data import DataLoader, Dataset
 from transformers.optimization import AdamW, get_cosine_schedule_with_warmup
-from transformers import PreTrainedTokenizerFast, GPT2LMHeadModel
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+checkpointname = "EleutherAI/polyglot-ko-3.8b"
 
 parser = argparse.ArgumentParser(description='Simsimi based on KoGPT-2')
 
@@ -45,7 +47,7 @@ MASK = '<unused0>'
 SENT = '<unused1>'
 PAD = '<pad>'
 
-TOKENIZER = PreTrainedTokenizerFast.from_pretrained("skt/kogpt2-base-v2",
+TOKENIZER = AutoTokenizer.from_pretrained(checkpointname,
             bos_token=BOS, eos_token=EOS, unk_token='<unk>',
             pad_token=PAD, mask_token=MASK) 
 
@@ -115,7 +117,7 @@ class KoGPT2Chat(LightningModule):
         super(KoGPT2Chat, self).__init__()
         self.hparams = hparams
         self.neg = -1e18
-        self.kogpt2 = GPT2LMHeadModel.from_pretrained('skt/kogpt2-base-v2')
+        self.kogpt2 = AutoModelForCausalLM.from_pretrained(checkpointname)
         self.loss_function = torch.nn.CrossEntropyLoss(reduction='none')
 
     @staticmethod
@@ -236,6 +238,10 @@ if __name__ == "__main__":
             args,
             checkpoint_callback=checkpoint_callback, gradient_clip_val=1.0)
         trainer.fit(model)
+
+        model.push_to_hub("Neptune")
+        TOKENIZER.push_to_hub("Neptune")
+        
         logging.info('best model path {}'.format(checkpoint_callback.best_model_path))
     if args.chat:
         model = KoGPT2Chat.load_from_checkpoint(args.model_params)
