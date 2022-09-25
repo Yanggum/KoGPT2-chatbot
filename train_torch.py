@@ -228,11 +228,7 @@ if __name__ == "__main__":
         checkpoint_callback = ModelCheckpoint(
             dirpath='model_chp',
             filename='{epoch:02d}-{train_loss:.2f}',
-            verbose=True,
-            save_last=True,
             monitor='train_loss',
-            mode='min',
-            prefix='model_'
         )
         # python train_torch.py --train --gpus 1 --max_epochs 3
         model = KoGPT2Chat(args)
