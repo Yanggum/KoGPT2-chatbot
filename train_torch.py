@@ -7,7 +7,7 @@ import pandas as pd
 import torch
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.core.module.LightningModule import LightningModule
+from pytorch_lightning.core.module import LightningModule
 from torch.utils.data import DataLoader, Dataset
 from transformers.optimization import AdamW, get_cosine_schedule_with_warmup
 from transformers import AutoTokenizer, AutoModelForCausalLM
